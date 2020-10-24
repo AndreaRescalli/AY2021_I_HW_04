@@ -11,11 +11,15 @@
 */
 #include "project.h"
 
+#define ON 1
+
 int main(void)
 {
     CyGlobalIntEnable; /* Enable global interrupts. */
 
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
+    Pin_LED_Write(ON);
+    
 
     for(;;)
     {
