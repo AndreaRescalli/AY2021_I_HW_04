@@ -16,9 +16,11 @@
 int main(void)
 {
     CyGlobalIntEnable; /* Enable global interrupts. */
+    UART_Start();
 
     /* Place your initialization/startup code here (e.g. MyInst_Start()) */
     Pin_LED_Write(ON);
+    UART_PutString("Hello, World!\r\n");
     
 
     for(;;)
