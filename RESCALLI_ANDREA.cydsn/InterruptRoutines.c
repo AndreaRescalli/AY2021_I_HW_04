@@ -10,31 +10,18 @@
  * ========================================
 */
 
+// Includes
 #include "InterruptRoutines.h"
 #include "project.h"
 
-// DEVONO ESSERE 32 PERCHÈ SE SIAMO IN SINGLE-ENDED A 16 BIT DOBBIAMO LEGGERE CON GET/READ32,
-// ALTRIMENTI CIOCCA IL CODICE
 
-
+// ISR of the timer that tells us when to sample our signals (once every 100ms)
 CY_ISR(Custom_ISR_Timer) {
 
     // Bring interrupt low
     Timer_ReadStatusRegister();
-
-    value_digit = ADC_DelSig_Read32();
     
-    // High values, near FS, are unstable
-    if(value_digit < 0) {
-        value_digit = 0;
-    }
-    
-    if(value_digit > 65535) {
-        value_digit = 65535;
-    }
-    
-    value_mv = ADC_DelSig_CountsTo_mVolts(value_digit);
-    sprintf(DataBuffer, "Sample: %ld mV\r\n", value_mv);
+    // Set flag to tell we can sample
     flag_timer = 1;
     
 }

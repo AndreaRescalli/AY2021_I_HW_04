@@ -15,12 +15,7 @@
     #include "cytypes.h"
     #include <stdio.h>
 
-    #define TRANSMIT_BUFFER_SIZE 16
-    
-    char DataBuffer[TRANSMIT_BUFFER_SIZE];
-    volatile uint8 flag_timer;
-    volatile int32 value_digit;
-    volatile int32 value_mv;
+    volatile uint8 flag_timer; // flag that tells 100ms (timer isr) have passed and we can sample our signals
 
     CY_ISR_PROTO(Custom_ISR_Timer);    
 #endif
