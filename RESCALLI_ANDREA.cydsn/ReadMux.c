@@ -27,19 +27,19 @@ void readmux(volatile int32 *buffer) {
     // Select the first channel, which is associated to the photoresistor.
     // We can use FastSelect since we have only two channels, and this function disconnects only the last one used.. it's faster
     AMux_FastSelect(PHR_CH);
-    buffer[0] = ADC_DelSig_Read32();
+    buffer[PHR_CH] = ADC_DelSig_Read32();
     
     // Extreme values, near FS, are unstable
-    if(buffer[0] > 65535) {
-        buffer[0] = 65535;
+    if(buffer[PHR_CH] > 65535) {
+        buffer[PHR_CH] = 65535;
     }
     
-    if(buffer[0] < 0) {
-        buffer[0] = 0;
+    if(buffer[PHR_CH] < 0) {
+        buffer[PHR_CH] = 0;
     }
 
     // We sample the potentiometer to regulate the LED only if we have to switch it on
-    if(buffer[0] <= THRESHOLD) {
+    if(buffer[PHR_CH] <= THRESHOLD) {
         // Set flag of the LED
         flag_led = 1;
         
@@ -47,21 +47,22 @@ void readmux(volatile int32 *buffer) {
 
         // Select the second channel, and disconnect the first one, to sample the potentiometer
         AMux_FastSelect(POT_CH);
-        buffer[1] = ADC_DelSig_Read32();
+        buffer[POT_CH] = ADC_DelSig_Read32();
         
         // Extreme values, near FS, are unstable
-        if(buffer[1] > 65535) {
-            buffer[1] = 65535;
+        if(buffer[POT_CH] > 65535) {
+            buffer[POT_CH] = 65535;
         }
     
-        if(buffer[1] < 0) {
-            buffer[1] = 0;
+        if(buffer[POT_CH] < 0) {
+            buffer[POT_CH] = 0;
         }
         
-        value_mv = ADC_DelSig_CountsTo_mVolts(buffer[1]);
+        value_mv = ADC_DelSig_CountsTo_mVolts(buffer[POT_CH]);
         sprintf(DataBuffer, "Sample: %ld mV\r\n", value_mv);
     }
     else {
+        // The ligh is above threshold and so we need to shut down the LED
         PWM_LED_Stop();
         Pin_LED_Write(OFF);
     }

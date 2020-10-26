@@ -16,9 +16,12 @@
     #include <stdio.h>
 
     volatile uint8 flag_timer; // Flag that tells 100ms (timer isr) have passed and we can sample our signals
+    volatile uint8 flag_start; // Flag that tells when to enable or disable the sampling process
     
     // Declaration of timer ISR
-    CY_ISR_PROTO(Custom_ISR_Timer);    
+    CY_ISR_PROTO(Custom_ISR_Timer);
+    // Declaration of UART ISR
+    CY_ISR_PROTO(Custom_ISR_RX);
 #endif
 
 /* [] END OF FILE */
