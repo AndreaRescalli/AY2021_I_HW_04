@@ -15,6 +15,10 @@
 #include "project.h"
 
 
+// Useful variables
+uint8 ch_rx;
+
+
 // ISR of the timer that tells us when to sample our signals (once every 100ms)
 CY_ISR(Custom_ISR_Timer) {
 
@@ -30,7 +34,7 @@ CY_ISR(Custom_ISR_Timer) {
 // ISR of the UART that is used to pilot remotely the device based on commands recieved
 CY_ISR(Custom_ISR_RX) {
     
-    uint8 ch_rx = UART_ReadRxData();
+    ch_rx = UART_ReadRxData();
     
     switch(ch_rx) {
     
@@ -39,6 +43,7 @@ CY_ISR(Custom_ISR_RX) {
             flag_start = 1;
             // Enable timer and ADC conversion
             Timer_Start();
+            ADC_DelSig_Start();
             ADC_DelSig_StartConvert();
             break;
             
@@ -47,8 +52,9 @@ CY_ISR(Custom_ISR_RX) {
             flag_start = 0;
             // Stop timer and disable ADC conversion
             Timer_Stop();
-            ADC_DelSig_StopConvert();
+            ADC_DelSig_Stop();
             break;
+            
         default:
             break;
             

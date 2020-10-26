@@ -31,9 +31,8 @@ int main(void) {
 
     CyGlobalIntEnable; /* Enable global interrupts. */
     
-    // Start of all the components (except for the timer, piloted through UART)
+    // Start of all the components (except for the timer and ADC, piloted through UART)
     UART_Start();
-    ADC_DelSig_Start();
     AMux_Start();
     PWM_LED_Start();
     
@@ -87,7 +86,7 @@ int main(void) {
                 flag_led = 0;
                 
             } // end flag_timer
-        } // end flag_start
+        } // end if(flag_start)
         else {
             // The device is stopped. We operate and display messages only if the device was previously working
             if(count) { 
@@ -98,8 +97,12 @@ int main(void) {
                 // Communicate with the user
                 UART_PutString("Device has been stopped\r\n");
                 UART_PutString("Send B or b to start the device\r\n");
+                
+                // Reset the flags
+                flag_timer = 0;
+                flag_led = 0;
             }
-        }
+        } // end else(flag_start)
         
     } //end for
     
