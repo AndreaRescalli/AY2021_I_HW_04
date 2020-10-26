@@ -57,6 +57,8 @@ int main(void) {
                 
                 // We are ready to sample our signals
                 readmux(samples);
+                // Send the packet of data
+                UART_PutArray(DataBuffer,TRANSMIT_BUFFER_SIZE);
                 
                 // Check the led flag to know wheather we have to turn it on and, in case, pilot it
                 if(flag_led) {
@@ -68,10 +70,7 @@ int main(void) {
                     }
                     // Keep track of the previous duty cycle
                     dc[OLD] = dc[NEW];
-                    
-                    // Display the value, in mV, of the potentiometer
-                    UART_PutString(DataBuffer);
-                    
+                                        
                     // Adjust the duty cycle of the PWM piloting the LED to control its intensity according to the
                     // potentiometer position set by the user
                     dc[NEW] = samples[POT_CH]/65535.0f*100;

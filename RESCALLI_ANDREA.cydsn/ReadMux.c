@@ -14,9 +14,6 @@
 #include "ReadMux.h"
 #include "project.h"
 
-// Useful variables
-static int32 value_mv; // used to communicate through the terminal the value in mV of the potentiometer
-
 
 // Function that is in charge of reading the ADC, channel by channel
 void readmux(int32 *buffer) {
@@ -37,32 +34,33 @@ void readmux(int32 *buffer) {
     if(buffer[PHR_CH] < 0) {
         buffer[PHR_CH] = 0;
     }
+    
+    // Select the second channel, and disconnect the first one, to sample the potentiometer
+    AMux_FastSelect(POT_CH);
+    buffer[POT_CH] = ADC_DelSig_Read32();
+    
+    // Extreme values, near FS, are unstable
+    if(buffer[POT_CH] > 65535) {
+        buffer[POT_CH] = 65535;
+    }
 
-    // We sample the potentiometer to regulate the LED only if we have to switch it on
+    if(buffer[POT_CH] < 0) {
+        buffer[POT_CH] = 0;
+    }
+    
+    DataBuffer[0] = buffer[PHR_CH] >> 8;   // 8 most significant bits
+    DataBuffer[1] = buffer[PHR_CH] & 0xFF; // 8 least significant bits
+    DataBuffer[2] = buffer[POT_CH] >> 8;   // 8 most significant bits
+    DataBuffer[3] = buffer[POT_CH] & 0xFF; // 8 least significant bits    
+
+    // We regulate the LED only if we have to switch it on
     if(buffer[PHR_CH] <= THRESHOLD) {
         // Set flag of the LED
         flag_led = 1;
         
-        // Extreme values, near FS, are unstable
-
-        // Select the second channel, and disconnect the first one, to sample the potentiometer
-        AMux_FastSelect(POT_CH);
-        buffer[POT_CH] = ADC_DelSig_Read32();
-        
-        // Extreme values, near FS, are unstable
-        if(buffer[POT_CH] > 65535) {
-            buffer[POT_CH] = 65535;
-        }
-    
-        if(buffer[POT_CH] < 0) {
-            buffer[POT_CH] = 0;
-        }
-        
-        value_mv = ADC_DelSig_CountsTo_mVolts(buffer[POT_CH]);
-        sprintf(DataBuffer, "Sample: %ld mV\r\n", value_mv);
     }
     else {
-        // The ligh is above threshold and so we need to shut down the LED
+        // The light is above threshold and so we need to shut down the LED
         PWM_LED_Stop();
         Pin_LED_Write(OFF);
     }
