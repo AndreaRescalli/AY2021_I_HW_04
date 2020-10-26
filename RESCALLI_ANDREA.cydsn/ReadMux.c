@@ -19,7 +19,7 @@ static int32 value_mv; // used to communicate through the terminal the value in 
 
 
 // Function that is in charge of reading the ADC, channel by channel
-void readmux(volatile int32 *buffer) {
+void readmux(int32 *buffer) {
     
     // Reset AMux to disconnect all channels
     AMux_Init();

@@ -15,6 +15,11 @@
 #include "project.h"
 
 
+// Defines
+#define ON  1
+#define OFF 0
+
+
 // Useful variables
 uint8 ch_rx;
 
@@ -41,6 +46,8 @@ CY_ISR(Custom_ISR_RX) {
         case 'B':
         case 'b':
             flag_start = 1;
+            // Turn internal LED ON since the PSoC is operating
+            Pin_COM_Write(ON);
             // Enable timer and ADC conversion
             Timer_Start();
             ADC_DelSig_Start();
@@ -50,6 +57,8 @@ CY_ISR(Custom_ISR_RX) {
         case 'S':
         case 's':
             flag_start = 0;
+            // Turn internal LED OFF since the PSoC is not operating
+            Pin_COM_Write(OFF);
             // Stop timer and disable ADC conversion
             Timer_Stop();
             ADC_DelSig_Stop();
