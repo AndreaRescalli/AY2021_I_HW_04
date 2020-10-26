@@ -35,14 +35,13 @@ int main(void) {
     Timer_Start();
     PWM_LED_Start();
     
-    // Init of timer flag and enable its ISR
+    // Init of timer and LED flag and enable the ISR
     flag_timer = 0;
+    flag_led = 0;
     isr_Timer_StartEx(Custom_ISR_Timer);
 
-    //
+    // Enable ADC conversion
     ADC_DelSig_StartConvert();
-    
-    //PWM_LED_WriteCompare(0);
     
 
     for(;;) {
@@ -56,7 +55,10 @@ int main(void) {
             if(flag_led) {
                 
                 // Turn LED on
-                Pin_LED_Write(ON);
+                if(Pin_LED_Read() == OFF) {
+                    PWM_LED_Enable(); // if the LED is OFF, PWM is disabled
+                    Pin_LED_Write(ON);
+                }
                 // Keep track of the previous duty cycle
                 dc[0] = dc[1];
                 

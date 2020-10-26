@@ -15,8 +15,9 @@
     #include "cytypes.h"
     #include <stdio.h>
 
-    volatile uint8 flag_timer; // flag that tells 100ms (timer isr) have passed and we can sample our signals
-
+    volatile uint8 flag_timer; // Flag that tells 100ms (timer isr) have passed and we can sample our signals
+    
+    // Declaration of timer ISR
     CY_ISR_PROTO(Custom_ISR_Timer);    
 #endif
 

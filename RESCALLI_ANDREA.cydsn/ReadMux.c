@@ -21,7 +21,7 @@ static int32 value_mv; // used to communicate through the terminal the value in 
 // Function that is in charge of reading the ADC, channel by channel
 void readmux(volatile int32 *buffer) {
     
-    // Reset AMux
+    // Reset AMux to disconnect all channels
     AMux_Init();
     
     // Select the first channel, which is associated to the photoresistor.
@@ -62,6 +62,7 @@ void readmux(volatile int32 *buffer) {
         sprintf(DataBuffer, "Sample: %ld mV\r\n", value_mv);
     }
     else {
+        PWM_LED_Stop();
         Pin_LED_Write(OFF);
     }
     
