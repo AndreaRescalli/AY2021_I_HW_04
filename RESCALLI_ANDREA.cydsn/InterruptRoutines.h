@@ -1,11 +1,21 @@
 /* ========================================
  *
- * Copyright YOUR COMPANY, THE YEAR
+ * Copyright LTEBS srl, 2020
  * All Rights Reserved
  * UNPUBLISHED, LICENSED SOFTWARE.
  *
  * CONFIDENTIAL AND PROPRIETARY INFORMATION
- * WHICH IS THE PROPERTY OF your company.
+ * WHICH IS THE PROPERTY OF LTEBS srl.
+ *
+ * \file  InterruptRoutines.h
+ * \brief Header file containing the ISRs of Timer and UART
+ *
+ * Development of a smart lamp that can be controlled in its ON/OFF state via remote, is sensible to
+ * ambient light (turns ON/OFF whenever the light is below a predefined threshold, if active) and can 
+ * be adjusted in its intensity by the user through a potentiometer
+ *
+ * \author: Andrea Rescalli
+ * \date:   30/10/2020
  *
  * ========================================
 */
