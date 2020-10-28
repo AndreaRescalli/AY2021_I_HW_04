@@ -104,10 +104,10 @@ CY_ISR(Custom_ISR_Timer) {
             // All the data relative to both photoresistor and potentiometer are stored, even in case
             // of light above threshold, to be able to monitor the correct functioning of the device in
             // any situation
-            DataBuffer[0] = value_phr >> 8;   // 8 most significant bits
-            DataBuffer[1] = value_phr & 0xFF; // 8 least significant bits
-            DataBuffer[2] = value_pot >> 8;   // 8 most significant bits
-            DataBuffer[3] = value_pot & 0xFF; // 8 least significant bits
+            DataBuffer[1] = value_phr >> 8;   // 8 most significant bits
+            DataBuffer[2] = value_phr & 0xFF; // 8 least significant bits
+            DataBuffer[3] = value_pot >> 8;   // 8 most significant bits
+            DataBuffer[4] = value_pot & 0xFF; // 8 least significant bits
             
             // If the light is below THRESHOLD we need to turn the LED ON and pilot it according to
             // the value imposed by the user through the potentiometer

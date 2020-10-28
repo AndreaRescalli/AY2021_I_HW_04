@@ -37,7 +37,9 @@
     #define POT_CH    1                     // CHANNEL FOR POTENTIOMETER
     #define THRESHOLD 32767                 // THRESHOLD ON PHOTORESISTOR TO TURN LED ON 
     
-    #define TRANSMIT_BUFFER_SIZE 2*CHANNELS // DIMENSION OF PACKET TO BE SENT
+    // DIMENSION OF PACKET TO BE SENT
+    #define BYTE_TO_SEND         2*CHANNELS
+    #define TRANSMIT_BUFFER_SIZE 1+BYTE_TO_SEND+1 
     
     
     // Globals

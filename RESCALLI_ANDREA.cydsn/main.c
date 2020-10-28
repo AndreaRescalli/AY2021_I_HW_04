@@ -43,6 +43,10 @@ int main(void) {
     
     flag_packet = 0;
     flag_start = 0;
+    
+    // Packet structure
+    DataBuffer[0]                      = 0xA0;
+    DataBuffer[TRANSMIT_BUFFER_SIZE-1] = 0xC0;    
 
     
     // Message for the user
