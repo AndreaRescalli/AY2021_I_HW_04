@@ -26,15 +26,16 @@
 
 
 // Useful variables
-static int32 value_phr = THRESHOLD + 10000; // Stores the value of the photoresistor. Initialized high above THRESHOLD
-static int32 value_pot = 0;                 // Stores the value of the potentiometer
-static uint8 ch_rx = 0;                     // Stores the recieved byte
-static float dc = 0.0;                      // Stores the DutyCycle to pilot the PWM with
-static uint8 count = 0;                     // Read disclaimer below
+static int32 value_phr = 0;     // Stores the value in mV of the photoresistor
+static int32 value_pot = 0;     // Stores the value in mV of the potentiometer
+
+static uint8 ch_rx = 0;         // Stores the recieved byte
+static float dc = 0.0;          // Stores the DutyCycle to pilot the PWM with
+static uint8 count = 0;         // Read disclaimer below
 
 /* 
  * !IMPORTANT!
- * After trying the device out several times, I've noticed that the very first sample acquired by the ADC after the build 
+ * After trying the device out several times, I've noticed that the very first sample acquired by the ADC after programming 
  * (or a reset of the PSoC), which happens to be the photoresistor signal (since it's the first of the two signals 
  * that is acquired), was very unstable: while the steady state of the measurement was (for instance) 62000, the first 
  * acquisition could go down to even 24000 with no reason at all.. from the second sampling it was stable.
@@ -81,6 +82,7 @@ CY_ISR(Custom_ISR_Timer) {
             value_phr = 0;
         }
         
+        
         // Select the second channel, and disconnect the first one, to sample the potentiometer
         AMux_FastSelect(POT_CH);
         value_pot = ADC_DelSig_Read32();
@@ -93,6 +95,7 @@ CY_ISR(Custom_ISR_Timer) {
         if(value_pot < 0) {
             value_pot = 0;
         }
+        
         
         // This is the control we do to discard the first sampling operation
         if(count > 1) {
