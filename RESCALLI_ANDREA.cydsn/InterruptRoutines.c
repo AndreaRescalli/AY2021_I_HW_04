@@ -34,10 +34,10 @@ static uint8 count = 0;                     // Read disclaimer below
 
 /* 
  * !IMPORTANT!
- * After trying the device out several times, I've noticed that the very first sample is acquired by the ADC after the build 
+ * After trying the device out several times, I've noticed that the very first sample acquired by the ADC after the build 
  * (or a reset of the PSoC), which happens to be the photoresistor signal (since it's the first of the two signals 
  * that is acquired), was very unstable: while the steady state of the measurement was (for instance) 62000, the first 
- * acquisition could go down to even 24000 with no reason at all.. from the second sampling it was super stable.
+ * acquisition could go down to even 24000 with no reason at all.. from the second sampling it was stable.
  * This led to the problem that, for a moment, the value of the photoresistor was (BUT NOT ALWAYS, IT WAS DEPENDENT ON THE 
  * AMPLITUDE OF THE OSCILLATION!) below threshold, resulting in a piloting of the LED for one cycle (it blinks once with 
  * an intensity set by the position of the potentiometer), and then the situation stabilized (as it should have been since 
@@ -46,6 +46,9 @@ static uint8 count = 0;                     // Read disclaimer below
  * in order to avoid a random behaviour of the LED in the initial stage.
  * 
  * The problem was not found in the case of device stopped with 'S' and then restarted with 'B', but just in the very first run
+ *
+ * Another approach could have been taking the mean of multiple samples before updating the lamp, but this would have resulted
+ * in a lower responsitivity of the overall system
  *
 */
 
@@ -61,7 +64,7 @@ CY_ISR(Custom_ISR_Timer) {
         // Reset AMux to disconnect all channels
         AMux_Init();
         
-        // Actually tells us wheather it's the first time we enter this part of the code or not
+        // Actually tells us whether it's the first time we enter this part of the code or not
         count++;
         
         // Select the first channel, which is associated to the photoresistor.
@@ -95,7 +98,7 @@ CY_ISR(Custom_ISR_Timer) {
         if(count > 1) {
             // Set count to 1 so that:
             // 1. we will enter this part of the code from now on
-            // 2. it does not undergo overflow
+            // 2. count does not undergo overflow
             count = 1;
             
             // All the data relative to both photoresistor and potentiometer are stored, even in case
@@ -139,7 +142,12 @@ CY_ISR(Custom_ISR_RX) {
         case 'B':
         case 'b':
             flag_start = 1;
-            // Turn internal LED ON since the PSoC is operating
+            /*
+             * Turn internal LED ON since the PSoC is operating
+             * N.B: for what said before (first sampling is discarded), even if this LED is 
+             * ON (PSoC operating), remember that for the first period we do not send data / pilot the lamp
+             *
+            */ 
             Pin_COM_Write(ON);
             // Enable the sampling
             Timer_Start();
