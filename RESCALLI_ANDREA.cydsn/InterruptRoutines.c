@@ -26,8 +26,8 @@
 
 
 // Useful variables
-static int32 value_phr = 0;     // Stores the value in mV of the photoresistor
-static int32 value_pot = 0;     // Stores the value in mV of the potentiometer
+static int32 value_phr = THRESHOLD + 1;     // Stores the value in mV of the photoresistor
+static int32 value_pot = 0;                 // Stores the value in mV of the potentiometer
 
 static uint8 ch_rx = 0;         // Stores the recieved byte
 static float dc = 0.0;          // Stores the DutyCycle to pilot the PWM with
@@ -53,8 +53,15 @@ static uint8 count = 0;         // Read disclaimer below
  *
 */
 
-
-// ISR of the timer that tells us when to sample our signals (once every 100ms)
+/*
+ * ISR of the timer that tells us when to sample our signals (once every 100ms)
+ * Given that:
+ * 1. No accurate temporal sampling has been required
+ * 2. The device only performs sampling and few other simple tasks
+ * 3. Clock of the ADC is >> ISR event (so the wait for ADC results is almost negligible)
+ * We can easily keep the sampling operation inside the ISR
+ *
+*/
 CY_ISR(Custom_ISR_Timer) {
 
     // Bring interrupt low
@@ -126,7 +133,7 @@ CY_ISR(Custom_ISR_Timer) {
             
             // Tell the main that we're done
             flag_packet = 1;
-        } // if count
+        } // end if(count)
         
     } // end if(flag_start)
     
